@@ -1,32 +1,15 @@
 package com.example.cli;
 
-import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
 
 @SpringBootApplication
 public class CliApplication {
-
-  // Commands come from Spring (constructor injection); anything else falls back to Picocli.
-  @Bean
-  IFactory picocliFactory(ApplicationContext ctx) {
-    return new IFactory() {
-      @Override
-      public <K> K create(Class<K> cls) throws Exception {
-        try {
-          return ctx.getBean(cls);
-        } catch (BeansException e) {
-          return CommandLine.defaultFactory().create(cls);
-        }
-      }
-    };
-  }
 
   @Bean
   PicocliRunner picocliRunner(IFactory factory, RootCommand root) {
