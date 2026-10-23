@@ -8,7 +8,7 @@
   <groupId>com.example</groupId>
   <artifactId>cli-demo</artifactId>
   <version>1.0.0</version>
-  <properties><java.version>21</java.version></properties>
+  <properties><java.version>25</java.version></properties>
   <dependencies>
     <dependency>
       <groupId>info.picocli</groupId>
