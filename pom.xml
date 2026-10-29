@@ -19,9 +19,53 @@
       <artifactId>picocli</artifactId>
       <version>4.7.7</version>
     </dependency>
+    <!-- HTTP interface clients generated from src/main/openapi -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-restclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jackson</artifactId>
+    </dependency>
+    <!-- generated models carry @NotNull even with bean validation off -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>7.26.0</version>
+        <executions>
+          <execution>
+            <id>greeting-api</id>
+            <goals><goal>generate</goal></goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/openapi/greeting-api.yaml</inputSpec>
+              <generatorName>spring</generatorName>
+              <library>spring-http-interface</library>
+              <configurationFile>${project.basedir}/src/main/openapi/generator-config.yaml</configurationFile>
+              <templateDirectory>${project.basedir}/src/main/openapi/templates</templateDirectory>
+              <apiPackage>com.example.cli.generated.api</apiPackage>
+              <modelPackage>com.example.cli.generated.model</modelPackage>
+              <supportingFilesToGenerate>ApiCommands.java</supportingFilesToGenerate>
+              <generateApiTests>false</generateApiTests>
+              <generateApiDocumentation>false</generateApiDocumentation>
+              <generateModelTests>false</generateModelTests>
+              <generateModelDocumentation>false</generateModelDocumentation>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
