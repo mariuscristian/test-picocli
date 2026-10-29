@@ -1,0 +1,60 @@
+/*
+ * Generated from the OpenAPI spec by templates/picocliCommand.mustache. Do not edit.
+ */
+package {{package}};
+
+import com.example.cli.ApiCommandSupport;
+{{#imports}}
+import {{import}};
+{{/imports}}
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.springframework.stereotype.Component;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+/** Command group for the "{{#lambda.kebabcase}}{{baseName}}{{/lambda.kebabcase}}" API tag. */
+@Component
+@Command(name = "{{#lambda.kebabcase}}{{baseName}}{{/lambda.kebabcase}}", mixinStandardHelpOptions = true,
+         description = "Calls the {{baseName}} API",
+         subcommands = {
+{{#operations}}{{#operation}}             {{classname}}Command.{{#lambda.pascalcase}}{{operationId}}{{/lambda.pascalcase}}.class,
+{{/operation}}{{/operations}}         })
+public class {{classname}}Command {
+{{#operations}}{{#operation}}
+
+  /** {{httpMethod}} {{path}} */
+  @Component
+  @Command(name = "{{#lambda.kebabcase}}{{operationId}}{{/lambda.kebabcase}}", mixinStandardHelpOptions = true,
+           description = "{{summary}} ({{httpMethod}} {{path}})")
+  public static class {{#lambda.pascalcase}}{{operationId}}{{/lambda.pascalcase}} implements Callable<Integer> {
+    private final {{classname}} api;
+    private final ApiCommandSupport support;
+{{#allParams}}
+{{#isBodyParam}}
+
+    @Option(names = "--body", required = {{required}}, paramLabel = "JSON",
+            description = "Request body as JSON ({{{dataType}}}); '-' reads it from stdin")
+    String body;
+{{/isBodyParam}}
+{{^isBodyParam}}
+
+    @Option(names = "--{{#lambda.kebabcase}}{{baseName}}{{/lambda.kebabcase}}", required = {{required}},
+            description = "{{description}}")
+    {{{dataType}}} {{paramName}};
+{{/isBodyParam}}
+{{/allParams}}
+
+    public {{#lambda.pascalcase}}{{operationId}}{{/lambda.pascalcase}}({{classname}} api, ApiCommandSupport support) {
+      this.api = api;
+      this.support = support;
+    }
+
+    @Override
+    public Integer call() {
+      {{#returnType}}support.printJson({{/returnType}}api.{{operationId}}({{#allParams}}{{#isBodyParam}}support.readJson(body, {{{dataType}}}.class){{/isBodyParam}}{{^isBodyParam}}{{paramName}}{{/isBodyParam}}{{^-last}}, {{/-last}}{{/allParams}}){{#returnType}}){{/returnType}};
+      return 0;
+    }
+  }
+{{/operation}}{{/operations}}
+}

@@ -3,11 +3,13 @@ package com.example.cli;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
+import com.example.cli.generated.ApiCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.NestedExceptionUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.Ansi;
 import picocli.CommandLine.IFactory;
@@ -38,10 +40,14 @@ public class CliApplication {
     @Override
     public void run(String... args) {
       CommandLine cmd = new CommandLine(root, factory);
+      // Command groups generated from the OpenAPI spec (see src/main/openapi).
+      ApiCommands.ALL.forEach(cmd::addSubcommand);
       // Stack traces go to the log file; the user gets a one-line message.
       cmd.setExecutionExceptionHandler((ex, commandLine, parseResult) -> {
         log.error("Command failed", ex);
-        commandLine.getErr().println(Ansi.AUTO.string("@|red Error: " + ex.getMessage() + "|@"));
+        Throwable cause = NestedExceptionUtils.getMostSpecificCause(ex);
+        String message = cause == ex ? ex.getMessage() : ex.getMessage() + " (" + cause + ")";
+        commandLine.getErr().println(Ansi.AUTO.string("@|red Error: " + message + "|@"));
         return commandLine.getCommandSpec().exitCodeOnExecutionException();
       });
       exitCode = cmd.execute(args);

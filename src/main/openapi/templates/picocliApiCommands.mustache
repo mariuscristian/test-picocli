@@ -1,0 +1,20 @@
+/*
+ * Generated from the OpenAPI spec by templates/picocliApiCommands.mustache. Do not edit.
+ */
+package com.example.cli.generated;
+
+import java.util.List;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.service.registry.ImportHttpServices;
+
+/** Registers the HTTP interface clients and lists the generated picocli command groups. */
+@Configuration
+@ImportHttpServices(group = "{{httpServiceGroup}}", types = {
+{{#apiInfo}}{{#apis}}{{#operations}}    {{package}}.{{classname}}.class,
+{{/operations}}{{/apis}}{{/apiInfo}}})
+public class ApiCommands {
+
+  public static final List<Class<?>> ALL = List.of(
+{{#apiInfo}}{{#apis}}{{#operations}}      {{package}}.{{classname}}Command.class{{^-last}},{{/-last}}
+{{/operations}}{{/apis}}{{/apiInfo}}  );
+}

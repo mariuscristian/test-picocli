@@ -1,0 +1,23 @@
+# openapi-generator settings for the Greeting API.
+# Stock `spring` generator (HTTP interface client) plus two custom templates
+# from ./templates that turn every API tag into a picocli command group.
+additionalProperties:
+  useSpringBoot4: true
+  useJackson3: true
+  useTags: true
+  useResponseEntity: false
+  openApiNullable: false
+  useBeanValidation: false
+  hideGenerationTimestamp: true
+  generateJsonIncludeAnnotations: false
+  generateJsonSetterNullsAnnotations: false
+  # Spring HTTP service group; base URL is spring.http.serviceclient.<group>.base-url
+  httpServiceGroup: greeting-api
+files:
+  picocliCommand.mustache:
+    templateType: API
+    destinationFilename: Command.java
+  picocliApiCommands.mustache:
+    templateType: SupportingFiles
+    folder: src/main/java/com/example/cli/generated
+    destinationFilename: ApiCommands.java
